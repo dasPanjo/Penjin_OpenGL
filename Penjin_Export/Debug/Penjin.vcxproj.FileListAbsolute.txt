@@ -1,0 +1,2 @@
+D:\Projects\C++\OpenGL_Engine\Penjin_Export\Debug\Penjin.lib
+D:\Projects\C++\OpenGL_Engine\Penjin_Export\Debug\Penjin.pdb

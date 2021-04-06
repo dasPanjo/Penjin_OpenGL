@@ -1,0 +1,4 @@
+﻿  Application3D.cpp
+  Main.cpp
+Penjin.lib(Application.obj) : error LNK2001: unresolved external symbol _SDL_Init
+D:\Projects\C++\OpenGL_Engine\Release\GameLogic.exe : fatal error LNK1120: 1 unresolved externals
