@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <vector>
 namespace Penjin {
 
 	class Time
@@ -18,6 +19,9 @@ namespace Penjin {
 		static void Tick();
 
 	private:
+
+		static std::vector<float> fps_cache;
+
 		/// <summary>Delta time in seconds</summary>
 		static float DeltaTime;
 

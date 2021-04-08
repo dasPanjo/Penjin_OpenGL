@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector3.h"
-#include "Quaternion.h"
 
 namespace Penjin
 {
@@ -8,6 +7,7 @@ namespace Penjin
 	{
 	public:
 		Transform();
+		Transform* parent;
 
 		Vector3 position;
 		Vector3 rotation;
@@ -21,6 +21,12 @@ namespace Penjin
 
 		void LookAt(float x, float y, float z);
 		void LookAt(Vector3 vector) { LookAt(vector.x, vector.y, vector.z); }
+
+		Vector3 GetForwardVector();
+		Vector3 GetRightVector();
+		Vector3 GetUpVector();
+
+		Vector3 GetWorldPosition();
 	};
 }
 

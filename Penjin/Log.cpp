@@ -30,7 +30,7 @@ namespace Penjin {
 		if (logLevel >= LogLevelConsole)
 			std::cout << message << std::endl;
 		if (!supressFile && logLevel >= LogLevelFile)
-			File::Write("log.txt", GetTimestamp() + message + "\n");
+			File::Append("log.txt", GetTimestamp() + message + "\n");
 		
 	}
 	std::string Log::GetTimestamp()

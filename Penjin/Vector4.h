@@ -18,7 +18,10 @@ namespace Penjin
 		void Add(Vector4 vector);
 		void Subtract(Vector4 vector);
 		void Multiply(float value);
+		void Divide(float value);
 
+		void Normalize();
+		virtual float GetLength() override;
 
 		Vector4 operator+(Vector4 vector);
 		Vector4& operator+=(Vector4 vector);
@@ -26,6 +29,8 @@ namespace Penjin
 		Vector4& operator-=(Vector4 vector);
 		Vector4 operator*(float value);
 		Vector4& operator*=(float value);
+		Vector4 operator/(float value);
+		Vector4& operator/=(float value);
 		friend std::ostream& operator<<(std::ostream& os, Vector4 const& v);
 	};
 }

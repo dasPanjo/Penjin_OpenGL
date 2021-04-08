@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\Images">
       <UniqueIdentifier>{3a16a579-abbc-4d0f-bd4a-88dfcb8aaac0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{66522ccb-d4bf-4f48-9d9e-114f5b3acf01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -33,6 +36,12 @@
     <ClCompile Include="RotateAroundPointComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CameraMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LookAtComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application3D.h">
@@ -44,12 +53,42 @@
     <ClInclude Include="RotateAroundPointComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CameraMovement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LookAtComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\DefaultShader.frag">
       <Filter>Resource Files\Shader</Filter>
     </None>
     <None Include="Shader\DefaultShader.vert">
+      <Filter>Resource Files\Shader</Filter>
+    </None>
+    <None Include="Models\WeirdCube.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="Models\Plane.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="Models\Plane.obj">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="Models\WeirdCube.obj">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="Models\Monkey.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="Models\Monkey.obj">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="Shader\Unlit.frag">
+      <Filter>Resource Files\Shader</Filter>
+    </None>
+    <None Include="Shader\Unlit.vert">
       <Filter>Resource Files\Shader</Filter>
     </None>
   </ItemGroup>

@@ -8,12 +8,9 @@
 
 namespace Penjin {
 	std::vector<StaticMeshComponent*> Renderer::staticMeshes;
-	Shader* Renderer::shader;
 
 	void Renderer::Init()
 	{
-		shader = new Shader();
-		shader->Bind();
 	}
 
 	void Renderer::Bind(StaticMeshComponent* meshFilter)
@@ -53,24 +50,48 @@ namespace Penjin {
 			return;
 		}
 
+		if (!meshFilter->IsInit()) return;
+
 		meshFilter->BindVao();
-		meshFilter->modelTexture->Bind(0);
+		meshFilter->material->Bind();
 
 		glm::mat4 modelMatrix = glm::mat4(1);
-		Vector3 position = meshFilter->gameObject->transform.position;
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, position.z));
-		Vector3 rotation = meshFilter->gameObject->transform.rotation;
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-		Vector3 scale = meshFilter->gameObject->transform.scale;
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, scale.z));
 
+		std::vector<Transform *> transformChain;
+		Transform* nextTransform = &meshFilter->gameObject->transform;
+		while (nextTransform != nullptr) {
+			transformChain.push_back(nextTransform);
+			nextTransform = nextTransform->parent;
+		}
+
+		for (int i = transformChain.size()-1; i >= 0; i--)
+		{
+			Vector3 position = transformChain[i]->position;
+			Vector3 rotation = transformChain[i]->rotation;
+			Vector3 scale = transformChain[i]->scale;
+
+			modelMatrix = glm::translate(modelMatrix, glm::vec3(-position.x, position.y, position.z));
+
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(-rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(-rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, scale.z));
+
+		}
+
+		Shader* shader = meshFilter->material->GetShader();
 		shader->Bind();
-		shader->SetUniform1i("u_texture", 0);
+		shader->SetUniform1i("u_texture", 0);		
 
-		shader->SetUniformMat4f("modelMatrix", modelMatrix);
-		shader->SetUniformMat3f("normalMatrix", glm::mat3(glm::transpose(glm::inverse(modelMatrix))));
+		Color color = meshFilter->material->BaseColor;
+		glm::vec4 baseColor(color.r, color.g, color.b, color.a);
+		shader->SetUniform4f("u_baseColor", baseColor);
+
+		
+		shader->SetUniformMat4f("u_modelMatrix", modelMatrix);
+		glm::mat3 normalMatrix(glm::transpose(glm::inverse(modelMatrix)));
+		shader->SetUniformMat3f("u_normalMatrix", normalMatrix);
 
 		Application* application = Application::Instance;
 		if (application)
@@ -78,8 +99,8 @@ namespace Penjin {
 			Camera* camera = application->GetCamera();
 			if (camera) {
 				//Log::Message("Rendering " + gameObject->name + " Indices: " + std::to_string(meshFilter->mesh->indices.size()));
-				shader->SetUniformMat4f("viewMatrix", camera->GetViewMatrix());
-				shader->SetUniformMat4f("projectionMatrix", camera->GetProjectionMatrix());
+				shader->SetUniformMat4f("u_viewMatrix", camera->GetViewMatrix());
+				shader->SetUniformMat4f("u_projectionMatrix", camera->GetProjectionMatrix());
 			}
 			else {
 				Log::Error("No active camera!");
@@ -87,7 +108,7 @@ namespace Penjin {
 		}
 
 		glDisable(GL_CULL_FACE);
-		glDrawElements(GL_TRIANGLES, meshFilter->mesh->indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, meshFilter->GetMesh().indices.size(), GL_UNSIGNED_INT, 0);
 		glEnable(GL_CULL_FACE);
 		meshFilter->UnbindVao();
 	}

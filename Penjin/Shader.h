@@ -16,6 +16,8 @@ namespace Penjin {
 
 		void Bind();
 		void Unbind();
+		void LoadShader(const char* vertexShaderFilename, const char* fragmentShaderFilename);
+		GLuint CreateShader(std::string vertexShaderSource, std::string fragmentShaderSource);
 
 		void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
 		void SetUniform4f(const std::string& name, glm::vec4 vec);
@@ -30,10 +32,14 @@ namespace Penjin {
 
 		inline GLuint GetShaderID() { return shaderID; }
 
+		static std::string GetVertDefaultUnlit();
+		static std::string GetFragDefaultUnlit();
+		static std::string GetVertDefaultLit();
+		static std::string GetFragDefaultLit();
+
 	private:
 		GLuint Compile(std::string shaderSource, GLenum type);
 		std::string Parse(const char* filename);
-		GLuint CreateShader(std::string vertexShaderSource, std::string fragmentShaderSource);
 
 		GLuint shaderID;  
 

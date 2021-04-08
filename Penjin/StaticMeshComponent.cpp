@@ -1,67 +1,22 @@
 #include "StaticMeshComponent.h"
 #include <GL/glew.h>
+#include <thread>
 
 #include "Renderer.h"
+#include "ObjectLoader.h"
+#include "GameObject.h"
 
-namespace Penjin 
+namespace Penjin
 {
-	StaticMeshComponent::StaticMeshComponent()
+	StaticMeshComponent::StaticMeshComponent() :
+		vao (0),
+		ibo (0),
+		vbo (0),
+		initVaoInterrupt(false),
+		drawWireframe(false)
 	{
 		mesh = new Mesh();
-		unsigned int quadIndices[] =
-		{
-			0, 1, 2, 0, 2, 3,//back
-			4, 5, 6, 4, 6, 7,//right
-			8,  9, 10, 8, 10, 11,//top
-		   12, 13, 14, 12, 14, 15,//left
-		   16, 17, 18, 16, 18, 19,//bottom
-		   20, 21, 22, 20, 22, 23//front
-		};
-		static Vertex quadVertices[] =
-		{
-			//back face
-			Vertex({0.5F, 0.5F, -0.5F}, {1,0}, {0,0,1}, {1,1,1,1}),
-			Vertex({-0.5F, 0.5F, -0.5F}, {0,0}, {0,0,1}, {1,1,1,1}),
-			Vertex({-0.5F, -0.5F, -0.5F}, {0,1}, {0,0,1}, {1,1,1,1}),
-			Vertex({0.5F, -0.5F, -0.5F}, {1,1}, {0,0,1}, {1,1,1,1}),
-
-			//right face
-			Vertex({0.5F, 0.5F, 0.5F}, {1,0}, {-1,0,0}, {1,1,1,1}),
-			Vertex({0.5F, 0.5F, -0.5F}, {0,0}, {-1,0,0}, {1,1,1,1}),
-			Vertex({0.5F, -0.5F, -0.5F}, {0,1}, {-1,0,0}, {1,1,1,1}),
-			Vertex({0.5F, -0.5F, 0.5F}, {1,1}, {-1,0,0}, {1,1,1,1}),
-
-			//top face
-			Vertex({0.5F, 0.5F, 0.5F}, {1,0}, {0,-1,0}, {1,1,1,1}),
-			Vertex({-0.5F, 0.5F, 0.5F}, {0,0}, {0,-1,0}, {1,1,1,1}),
-			Vertex({-0.5F, 0.5F, -0.5F}, {0,1}, {0,-1,0}, {1,1,1,1}),
-			Vertex({0.5F, 0.5F, -0.5F}, {1,1}, {0,-1,0}, {1,1,1,1}),
-
-			//left face
-			Vertex({-0.5F, 0.5F, -0.5F}, {1,0}, {1,0,0}, {1,1,1,1}),
-			Vertex({-0.5F, 0.5F, 0.5F}, {0,0}, {1,0,0}, {1,1,1,1}),
-			Vertex({-0.5F, -0.5F, 0.5F}, {0,1}, {1,0,0}, {1,1,1,1}),
-			Vertex({-0.5F, -0.5F, -0.5F}, {1,1}, {1,0,0}, {1,1,1,1}),
-
-			//bottom face
-			Vertex({0.5F, -0.5F, -0.5F}, {1,0}, {0,1,0}, {1,1,1,1}),
-			Vertex({-0.5F, -0.5F, -0.5F}, {0,0}, {0,1,0}, {1,1,1,1}),
-			Vertex({-0.5F, -0.5F, 0.5F}, {0,1}, {0,1,0}, {1,1,1,1}),
-			Vertex({0.5F, -0.5F, 0.5F}, {1,1}, {0,1,0}, {1,1,1,1}),
-
-			//front face
-			Vertex({-0.5F, 0.5F, 0.5F}, {1,0}, {0,0,-1}, {1,1,1,1}),
-			Vertex({0.5F, 0.5F, 0.5F}, {0,0}, {0,0,-1}, {1,1,1,1}),
-			Vertex({0.5F, -0.5F, 0.5F}, {0,1}, {0,0,-1}, {1,1,1,1}),
-			Vertex({-0.5F, -0.5F, 0.5F}, {1,1}, {0,0,-1}, {1,1,1,1})
-		};
-
-		mesh->vertices = std::vector<Vertex>(quadVertices, quadVertices + sizeof quadVertices / sizeof quadVertices[0]);
-		mesh->indices = std::vector<unsigned int>(quadIndices, quadIndices + sizeof quadIndices / sizeof quadIndices[0]);
-
-		modelTexture = new Texture();
-
-		InitVao();
+		material = new Material();
 	}
 	void StaticMeshComponent::Start()
 	{
@@ -69,16 +24,65 @@ namespace Penjin
 	}
 	void StaticMeshComponent::BindVao()
 	{
+		if(drawWireframe)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		if (!IsInit()) return;
 		glBindVertexArray(vao);
 	}
 	void StaticMeshComponent::UnbindVao()
 	{
+		if (drawWireframe)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glBindVertexArray(0);
 	}
+	void StaticMeshComponent::SetMesh(Mesh* mesh)
+	{
+		this->mesh = mesh;
+		InitVao();
+	}
+	void StaticMeshComponent::LoadMesh(const char* filename)
+	{
+		SetMesh(ObjectLoader::LoadObjModel(filename));
+	}
+
+
+	void StaticMeshComponent::LoadMeshAsync(const char* filename) {
+		std::thread t1(&StaticMeshComponent::LoadMeshNoVao, this, filename);
+		t1.detach();
+	}
+
+	bool StaticMeshComponent::IsInit()
+	{
+		if (initVaoInterrupt)
+		{
+			InitVao();
+			initVaoInterrupt = false;
+		}
+		return vao > 0;
+	}
+
+	void StaticMeshComponent::LoadMeshNoVao(const char* filename)
+	{
+		mesh = ObjectLoader::LoadObjModel(filename);
+		Log::Message("Loaded" + std::string(filename));
+		initVaoInterrupt = true;
+	}
+
 	void StaticMeshComponent::InitVao()
 	{
+		if (mesh->vertices.size() == 0 || mesh->indices.size() == 0) {
+			Log::Error("VAO not initialized. vert_size(" +std::to_string(mesh->indices.size()) + ") indices_size("+ std::to_string(mesh->indices.size()) +")");
+			vao = 0;
+			return;
+		}
+
 		//making vao
 		glGenVertexArrays(1, &vao);
+		if (vao == 0) {
+			Log::Error("VAO could not be initialized!");
+			vao = 0;
+			return;
+		}
 		glBindVertexArray(vao);
 
 		//making index buffer
@@ -94,19 +98,19 @@ namespace Penjin
 		//configuring layout for vbo
 		//pos
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, position));
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, x));
 
 		//uv
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, uv));
+		glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, u));
 
 		//normal
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, normal));
+		glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, normX));
 
 		//color
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, color));
+		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, r));
 
 	}
 }

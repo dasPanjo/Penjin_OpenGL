@@ -17,7 +17,6 @@ namespace Penjin {
 		static std::vector<StaticMeshComponent*> staticMeshes;
 
 		static void RenderStaticMesh(StaticMeshComponent* meshFilter);
-		static Shader* shader;
 	};
 }
 
