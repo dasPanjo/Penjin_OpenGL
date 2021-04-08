@@ -6,7 +6,7 @@ class RotateAroundPointComponent
 	: public Penjin::Component
 {
 public:
-	RotateAroundPointComponent(Penjin::Vector3 center, float radius, float speed = 10, bool lookAtCenter = false);
+	RotateAroundPointComponent(Penjin::Vector3 center, float radius, float speed = 10);
 
 	virtual void Update() override;
 

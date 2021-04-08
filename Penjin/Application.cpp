@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Times.h"
 #include "Log.h"
+#include "Input.h"
 
 namespace Penjin
 {
@@ -37,25 +38,49 @@ namespace Penjin
 		{
 			Renderer::Init();
 
+			float frameTimer = 0;
+
 			while (!m_gameOver) {
+				Input::mouseSpeed.x = 0;
+				Input::mouseSpeed.y = 0;
 
-				glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-				Time::Tick();
-
-				Update();
-				Draw();
-
-
-				SDL_GL_SwapWindow(window);
 				SDL_Event event;
 				while (SDL_PollEvent(&event)) {
 					switch (event.type) {
 					case SDL_QUIT:
 						m_gameOver = true;
 						break;
+					case SDL_KEYDOWN:
+						Input::OnKeyDown(event.key.keysym.sym);
+						break;
+					case SDL_KEYUP:
+						Input::OnKeyUp(event.key.keysym.sym);
+						break;
+					case SDL_MOUSEMOTION:
+						int x = event.motion.xrel;
+						int y = event.motion.yrel;
+						Input::mouseSpeed.x = x;
+						Input::mouseSpeed.y = y;
+						Input::mousePos.x += x;
+						Input::mousePos.y += y;
 					}
 				}
+				if (m_gameOver) break;
+
+				Time::Tick();
+
+				Update();
+
+				//frameTimer += Penjin::Time::GetDeltaTime();
+				//if (frameTimer >= 1 / 60.0f) {
+				//	frameTimer = 0;
+					glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+					Draw();
+					SDL_GL_SwapWindow(window);
+				//}
+
+
 			}
 		}
 		Shutdown();
@@ -76,12 +101,15 @@ namespace Penjin
 	{
 
 		SDL_Init(SDL_INIT_EVERYTHING);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetSwapInterval(1);
+
 #ifdef _DEBUG
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 #endif
@@ -92,6 +120,8 @@ namespace Penjin
 
 		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, windowFlags);
 		glContext = SDL_GL_CreateContext(window);
+
+		glewExperimental = GL_TRUE;
 		GLenum glewError = glewInit();
 		if (glewError != GLEW_OK) {
 			Log::Critical("GLEW-error: " + std::string((char*)glewGetErrorString(glewError)));

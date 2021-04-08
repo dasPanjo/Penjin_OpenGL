@@ -12,5 +12,7 @@ public:
 
 	virtual void Update() override;
 	Penjin::Vector3 speed;
+	int phase;
+	float progress;
 };
 

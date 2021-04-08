@@ -21,6 +21,7 @@ namespace Penjin {
 
 		virtual void AddComponent(Component* component);
 		virtual void RemoveComponent(Component* component);
+
 	private:
 		std::vector<Component*> components;
 	};

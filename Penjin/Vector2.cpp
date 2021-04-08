@@ -27,6 +27,23 @@ namespace Penjin {
 		this->x *= value;
 		this->y *= value;
 	}
+	void Vector2::Divide(float value)
+	{
+		this->x /= value;
+		this->y /= value;
+	}
+
+	void Vector2::Normalize()
+	{
+		float length = GetLength();
+		if (length == 0) return;
+		Divide(length);
+	}
+
+	float Vector2::GetLength()
+	{
+		return sqrt(x*x+y*y);
+	}
 
 
 	Vector2 Vector2::operator+(Vector2 vector)
@@ -56,13 +73,27 @@ namespace Penjin {
 
 	Vector2 Vector2::operator*(float value)
 	{
-		return Vector2(this->x *value, this->y * value);
-	}
-	Vector2& Vector2::operator*=(float value)
-	{
 		Vector2 vec(this->x, this->y);
 		vec.Multiply(value);
 		return vec;
+	}
+	Vector2& Vector2::operator*=(float value)
+	{
+		Multiply(value);
+		return *this;
+	}
+
+	Vector2 Vector2::operator/(float value)
+	{
+		Vector2 vec(this->x, this->y);
+		vec.Divide(value);
+		return vec;
+
+	}
+	Vector2& Vector2::operator/=(float value)
+	{
+		Divide(value);
+		return *this;
 	}
 
 

@@ -31,6 +31,26 @@ namespace Penjin {
 		this->w *= value;
 	}
 
+	void Vector4::Divide(float value)
+	{
+		x /= x;
+		y /= y;
+		z /= z;
+		w /= w;
+	}
+
+	void Vector4::Normalize()
+	{
+		float length = GetLength();
+		if (length == 0) return;
+		Divide(length);
+	}
+
+	float Vector4::GetLength()
+	{
+		return sqrt(x*x+y*y+z*z+w*w);
+	}
+
 	Vector4 Vector4::operator+(Vector4 vector)
 	{
 		Vector4 vec(this->x, this->y, this->z, this->w);
@@ -66,6 +86,19 @@ namespace Penjin {
 	Vector4& Vector4::operator*=(float value)
 	{
 		this->Multiply(value);
+		return *this;
+	}
+
+	Vector4 Vector4::operator/(float value)
+	{
+		Vector4 vec(this->x, this->y, this->z, this->w);
+		vec.Divide(value);
+		return vec;
+	}
+
+	Vector4& Vector4::operator/=(float value)
+	{
+		this->Divide(value);
 		return *this;
 	}
 

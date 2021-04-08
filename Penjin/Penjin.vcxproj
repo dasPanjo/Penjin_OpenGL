@@ -20,12 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -39,14 +43,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="LogLevel.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />

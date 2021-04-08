@@ -43,6 +43,18 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{0d82c5d4-2997-4fe3-bbff-485c619daa1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{8775be36-ce92-40be-9814-f7db472e7f4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ObjectLoader">
+      <UniqueIdentifier>{198ad001-7209-411e-b6ae-1f09689329e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{4cf79977-da0a-44db-81c2-87cc4649c217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{d16c46b7-4315-40c9-b992-3f55760841ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -95,6 +107,18 @@
     </ClCompile>
     <ClCompile Include="Quaternion.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectLoader.cpp">
+      <Filter>Source Files\ObjectLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +184,18 @@
     </ClInclude>
     <ClInclude Include="Quaternion.h">
       <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectLoader.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

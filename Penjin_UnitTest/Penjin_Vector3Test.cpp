@@ -36,6 +36,24 @@ namespace PenjinVectorTest
 			Assert::AreEqual(2.0f, vec.y);
 			Assert::AreEqual(3.0f, vec.z);
 		}
+
+		TEST_METHOD(Normalize)
+		{
+			float x = 3;
+			float y = 4;
+			float z = 5;
+			Penjin::Vector3 vec(x,y,z);
+			float length = sqrt(x * x + y * y + z * z);
+			x /= length;
+			y /= length;
+			z /= length;
+			vec.Normalize();			
+			Assert::AreEqual(x, vec.x);
+			Assert::AreEqual(y, vec.y);
+			Assert::AreEqual(z, vec.z);
+			Assert::AreEqual(1.0f, vec.GetLength());
+		}
+
 		TEST_METHOD(Add)
 		{
 			Penjin::Vector3 vec1(1.0f, 2.0f, 3.0f);

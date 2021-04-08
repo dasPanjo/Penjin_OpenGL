@@ -17,6 +17,12 @@ namespace Penjin {
 		void Add(Vector3 vector);
 		void Subtract(Vector3 vector);
 		void Multiply(float value);
+		void Divide(float value);
+
+		static Vector3 Lerp(Vector3 vector1, Vector3 vector2, float t);
+
+		void Normalize();
+		virtual float GetLength() override;
 
 		Vector3 operator+(Vector3 vector);
 		Vector3& operator+=(Vector3 vector);
@@ -24,6 +30,8 @@ namespace Penjin {
 		Vector3& operator-=(Vector3 vector);
 		Vector3 operator*(float value);
 		Vector3& operator*=(float value);
+		Vector3 operator/(float value);
+		Vector3& operator/=(float value);
 
 		std::string ToString();
 		friend std::ostream& operator<<(std::ostream& os, Vector3 const& v);

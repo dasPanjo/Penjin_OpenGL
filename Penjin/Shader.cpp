@@ -5,43 +5,11 @@
 namespace Penjin {
 	Shader::Shader()
 	{
-		std::string vertexShader(
-			"#version 330 core\n"
-			"layout(location = 0) in vec4 a_position;"
-			"layout(location = 1) in vec2 a_texUV;"
-			"layout(location = 2) in vec3 a_normal;"
-			"layout(location = 3) in vec4 a_color;"
-			"uniform mat4 projectionMatrix;"
-			"uniform mat4 viewMatrix;"
-			"uniform mat4 modelMatrix;"
-			"uniform mat3 normalMatrix;"
-			"out vec2 v_texUV;"
-			"out vec3 vNormal;"
-			"out vec4 v_color;"
-			"void main() {"
-			"	gl_Position = projectionMatrix * viewMatrix * modelMatrix * a_position;"
-			"	v_texUV = a_texUV;"
-			"	vNormal = normalize(normalMatrix * a_normal);"
-			"	v_color = a_color;"
-			"}");
-
-		std::string fragmentShader(
-			"#version 330 core\n"
-			"in vec2 v_texUV;"
-			"in vec3 v_normal;"
-			"in vec4 v_color;"
-			"uniform sampler2D u_texture;"
-			"layout(location = 0) out vec4 f_color;"
-			"void main() {"
-			"	vec4 texColor = texture(u_texture, v_texUV);"
-			"	f_color = v_color * texColor;"
-			"}");
-
-		shaderID = CreateShader(vertexShader, fragmentShader);
+		CreateShader(Shader::GetVertDefaultLit(), Shader::GetFragDefaultLit());
 	}
 	Shader::Shader(const char* vertexShaderFilename, const char* fragmentShaderFilename)
 	{
-		shaderID = CreateShader(Parse(vertexShaderFilename), Parse(fragmentShaderFilename));
+		LoadShader(vertexShaderFilename, fragmentShaderFilename);
 	}
 
 	Shader::~Shader()
@@ -57,6 +25,11 @@ namespace Penjin {
 	void Shader::Unbind()
 	{
 		glUseProgram(0);
+	}
+
+	void Shader::LoadShader(const char* vertexShaderFilename, const char* fragmentShaderFilename) {
+		shaderID = CreateShader(Parse(vertexShaderFilename), Parse(fragmentShaderFilename));
+		Log::Message("Loaded Shader " + std::string(vertexShaderFilename));
 	}
 
 
@@ -196,6 +169,118 @@ namespace Penjin {
 		glDeleteShader(frag);
 #endif
 
+		shaderID = program;
+		uniformLocationCache.clear();
 		return program;
+	}
+
+
+	std::string Shader::GetVertDefaultUnlit()
+	{
+		return
+			"#version 330 core\n"
+			""
+			"layout(location = 0) in vec3 a_position;"
+			"layout(location = 1) in vec2 a_texUV;"
+			"layout(location = 2) in vec3 a_normal;"
+			"layout(location = 3) in vec4 a_color;"
+			""
+			"uniform mat4 u_projectionMatrix;"
+			"uniform mat4 u_viewMatrix;"
+			"uniform mat4 u_modelMatrix;"
+			"uniform vec4 u_baseColor;"
+			""
+			"out vec2 v_texUV;"
+			"out vec4 v_color;"
+			""
+			"void main() {"
+			"	gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1);"
+			"	v_texUV = a_texUV;"
+			"	v_color = a_color * u_baseColor;"
+			"}";
+	}
+
+	std::string Shader::GetFragDefaultUnlit()
+	{
+		return
+			"#version 330 core\n"
+			""
+			"in vec2 v_texUV;"
+			"in vec4 v_color;"
+			""
+			"uniform sampler2D u_texture;"
+			""
+			"layout(location = 0) out vec4 f_color;"
+			""
+			"void main() {"
+			"	vec4 texColor = texture(u_texture, v_texUV);"
+			"	f_color = v_color * texColor;"
+			"}";
+	}
+
+	std::string Shader::GetVertDefaultLit()
+	{
+		return
+			"#version 330 core\n"
+			""
+			"layout(location = 0) in vec3 a_position;"
+			"layout(location = 1) in vec2 a_texUV;"
+			"layout(location = 2) in vec3 a_normal;"
+			"layout(location = 3) in vec4 a_color;"
+			""
+			"uniform mat4 u_projectionMatrix;"
+			"uniform mat4 u_viewMatrix;"
+			"uniform mat4 u_modelMatrix;"
+			"uniform mat3 u_normalMatrix;"
+			"uniform vec4 u_baseColor;"
+			""
+			"out vec2 v_texUV;"
+			"out vec4 v_color;"
+			"out vec3 normal;"
+			"out vec4 eye;"
+			""
+			"void main() {"
+			"	gl_Position = u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1);"
+			"	v_texUV = a_texUV;"
+			"	v_color = a_color * u_baseColor;"
+			""
+			"	normal = normalize(u_normalMatrix * a_normal);"
+			"	eye = -(u_projectionMatrix * u_viewMatrix * u_modelMatrix * vec4(a_position, 1));"
+			"}";
+	}
+
+	std::string Shader::GetFragDefaultLit()
+	{
+		return
+			"#version 330 core\n"
+			""
+			"in vec2 v_texUV;"
+			"in vec4 v_color;"
+			"in vec3 normal;"
+			"in vec4 eye;"
+			""
+			"uniform sampler2D u_texture;"
+			""
+			"layout(location = 0) out vec4 f_color;"
+			""
+			"void main() {"
+			"	vec4 texColor = texture(u_texture, v_texUV);"
+			""
+			"	vec4 spec = vec4(0.0);"
+			""
+			"	vec3 n = normalize(normal);"
+			"	vec3 e = normalize(vec3(eye));"
+			""
+			"	vec3 direction = vec3(0.8, 0.8, 0);"
+			""
+			"	float intensity = max(dot(n, direction), 0.0);"
+			"	if (intensity > 0.0) {"
+			"		vec3 h = normalize(direction + e);"
+			"		float intSpec = max(dot(h, n), 0.0);"
+			"		spec = vec4(0.01) * pow(intSpec, 0.01);"
+			"	}"
+			""
+			"	f_color = v_color * texColor * min(max(intensity + spec, vec4(0.1)), 0.9);"
+			"}";
 	}
 }

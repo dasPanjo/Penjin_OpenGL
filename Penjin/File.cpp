@@ -10,6 +10,17 @@ namespace Penjin {
 
 	bool File::Write(const char* filename, const char* text, int maxFileSize)
 	{
+		std::ofstream filestream(filename, std::ios::out);
+		if (filestream.fail()) {
+			Log::Error("File::Write error: file '" + std::string(filename) + "' not found!", true);
+			return false;
+		}
+		filestream << text;
+		filestream.close();
+		return true;
+	}
+	bool File::Append(const char* filename, const char* text, int maxFileSize)
+	{
 		std::ofstream filestream(filename, std::ios::app);
 		if (filestream.fail()) {
 			Log::Error("File::Write error: file '" + std::string(filename) + "' not found!", true);
