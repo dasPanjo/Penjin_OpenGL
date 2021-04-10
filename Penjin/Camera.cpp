@@ -23,9 +23,9 @@ namespace Penjin {
 		transform.position = position;
 		name = "Camera";
 
-		projectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 1000.0f);
+		projectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 5000.0f);
 	}
-	glm::mat4 Camera::GetViewMatrix()
+	void Camera::CalculateViewMatrix(bool translation)
 	{
 		glm::mat4 viewMatrix = glm::mat4(1);
 
@@ -35,8 +35,11 @@ namespace Penjin {
 		viewMatrix = glm::rotate(viewMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 		viewMatrix = glm::rotate(viewMatrix, glm::radians(rotation.y + 180), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		Vector3 position = transform.position;
-		viewMatrix = glm::translate(viewMatrix, glm::vec3(position.x, -position.y, -position.z));
+		if (translation)
+		{
+			Vector3 position = transform.position;
+			viewMatrix = glm::translate(viewMatrix, glm::vec3(position.x, -position.y, -position.z));
+		}
 
 		if (transform.parent != nullptr)
 		{
@@ -47,7 +50,7 @@ namespace Penjin {
 				nextTransform = nextTransform->parent;
 			}
 
-			for (int i = 0; i < transformChain.size(); i++)
+			for (size_t i = 0; i < transformChain.size(); i++)
 			{
 				Vector3 position = transformChain[i]->position;
 				Vector3 rotation = transformChain[i]->rotation;
@@ -58,12 +61,10 @@ namespace Penjin {
 				viewMatrix = glm::rotate(viewMatrix, glm::radians(-rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 				viewMatrix = glm::rotate(viewMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 
-				viewMatrix = glm::translate(viewMatrix, glm::vec3(position.x, -position.y, -position.z));
+				if(translation) viewMatrix = glm::translate(viewMatrix, glm::vec3(position.x, -position.y, -position.z));
 
 			}
 		}
-
-
-		return viewMatrix;
+		this->viewMatrix =  viewMatrix;
 	}
 }

@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "Renderer.h"
-#include "ObjectLoader.h"
+#include "AssetLoader.h"
 #include "GameObject.h"
 
 namespace Penjin
@@ -13,7 +13,8 @@ namespace Penjin
 		ibo (0),
 		vbo (0),
 		initVaoInterrupt(false),
-		drawWireframe(false)
+		drawWireframe(false),
+		loadedFile("none")
 	{
 		mesh = new Mesh();
 		material = new Material();
@@ -42,11 +43,13 @@ namespace Penjin
 	}
 	void StaticMeshComponent::LoadMesh(const char* filename)
 	{
-		SetMesh(ObjectLoader::LoadObjModel(filename));
+		loadedFile = std::string(filename);
+		SetMesh(AssetLoader::LoadModel(filename));
 	}
 
 
 	void StaticMeshComponent::LoadMeshAsync(const char* filename) {
+		loadedFile = std::string(filename);
 		std::thread t1(&StaticMeshComponent::LoadMeshNoVao, this, filename);
 		t1.detach();
 	}
@@ -63,26 +66,35 @@ namespace Penjin
 
 	void StaticMeshComponent::LoadMeshNoVao(const char* filename)
 	{
-		mesh = ObjectLoader::LoadObjModel(filename);
+		mesh = AssetLoader::LoadModel(filename);
 		Log::Message("Loaded" + std::string(filename));
 		initVaoInterrupt = true;
 	}
 
 	void StaticMeshComponent::InitVao()
 	{
+		if (mesh == nullptr)
+		{
+			Log::Error(loadedFile + ": VAO not initialized. Mesh is nullptr!");
+			vao = 0;
+			return;
+		}
 		if (mesh->vertices.size() == 0 || mesh->indices.size() == 0) {
-			Log::Error("VAO not initialized. vert_size(" +std::to_string(mesh->indices.size()) + ") indices_size("+ std::to_string(mesh->indices.size()) +")");
+			Log::Error(loadedFile + ": VAO not initialized. vert_size(" +std::to_string(mesh->indices.size()) + ") indices_size("+ std::to_string(mesh->indices.size()) +")");
 			vao = 0;
 			return;
 		}
 
 		//making vao
-		glGenVertexArrays(1, &vao);
 		if (vao == 0) {
-			Log::Error("VAO could not be initialized!");
-			vao = 0;
-			return;
+			glGenVertexArrays(1, &vao);
+			if (vao == 0) {
+				Log::Error(loadedFile + ": VAO could not be initialized!");
+				vao = 0;
+				return;
+			}
 		}
+
 		glBindVertexArray(vao);
 
 		//making index buffer
@@ -111,6 +123,5 @@ namespace Penjin
 		//color
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, r));
-
 	}
 }

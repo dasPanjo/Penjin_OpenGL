@@ -3,6 +3,8 @@
 class CameraMovement
 	: public Penjin::Component
 {
+public:
 	virtual void Update() override;
+	float speed = 2.0f;
 };
 

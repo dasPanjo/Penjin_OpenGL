@@ -40,7 +40,7 @@ void Penjin::GameObject::AddComponent(Component* component)
 		Log::Error("GameObject '" + this->name + "': AddComponent was called with nullptr");
 		return;
 	}
-	Log::Message("Added " + name);
+	//Log::Message("Added " + name);
 	components.push_back(component);
 	component->gameObject = this;
 	component->Start();

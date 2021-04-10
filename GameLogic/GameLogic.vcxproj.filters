@@ -96,5 +96,20 @@
     <Image Include="Images\Brick.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="Images\Daylight Box UV.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Images\DefaultTexture.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Images\MonkeyTex.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Images\PlaneTex.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Images\WhitePixel.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>

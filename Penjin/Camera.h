@@ -21,14 +21,18 @@ namespace Penjin {
 			/// <summary>Field of view</summary>
 			float FOV;
 
+
+			void CalculateViewMatrix(bool translation = true);
+
 			/// <summary>Returns the view matrix</summary>
-			glm::mat4 GetViewMatrix();
+			glm::mat4 GetViewMatrix() { return viewMatrix; }
 
 			/// <summary>Returns the projection matrix</summary>
 			glm::mat4 GetProjectionMatrix() { return projectionMatrix; }
 	protected:
 		/// <summary>The projection matrix</summary>
 		glm::mat4 projectionMatrix;
+		glm::mat4 viewMatrix;
 
 		/// <summary>The current aspectRatio</summary>
 		float aspectRatio;

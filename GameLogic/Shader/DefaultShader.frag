@@ -19,17 +19,17 @@ void main() {
     vec3 n = normalize(normal);
     vec3 e = normalize(vec3(eye));
     
-    vec3 direction = vec3(0.8,0.8,0);
-
+    vec3 direction = vec3(-0.8,-0.8,0);
+    
     float intensity = max(dot(n,direction), 0.0);
     // if the vertex is lit compute the specular color
     if (intensity > 0.0) {
         // compute the half vector
-        vec3 h = normalize(direction + e);  
+        vec3 h = normalize(direction + e);
         // compute the specular term into spec
         float intSpec = max(dot(h,n), 0.0);
-        spec = vec4(0.01) * pow(intSpec,0.01);
+        spec = vec4(0.1) * pow(intSpec,0.01);
     }
 
-	f_color = v_color * texColor * min(max(intensity + spec, vec4(0.1)), 0.9);
+	f_color = v_color * texColor * min(max(intensity + spec, vec4(0.1)), 1.0f);
 }

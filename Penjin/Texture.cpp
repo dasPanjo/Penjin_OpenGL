@@ -18,7 +18,7 @@ namespace Penjin {
 				}
 			}
 		};
-		BindTexture(1, 1, pixel);
+		Load(1, 1, pixel);
 	}
 	Texture::Texture(const char* filename)
 		:Texture()
@@ -27,13 +27,6 @@ namespace Penjin {
 	}
 	void Texture::Load(const char* filename)
 	{
-		if (m_glHandle != 0) {
-			glDeleteTextures(1, &m_glHandle);
-			m_glHandle = 0;
-			m_width = 0;
-			m_height = 0;
-			m_filename = "none";
-		}
 
 		m_filename = std::string(filename);
 
@@ -44,7 +37,9 @@ namespace Penjin {
 			return;
 		}
 
-		BindTexture(m_width, m_height, textureBuffer);
+		Load(m_width, m_height, textureBuffer);
+		m_filename = filename;
+
 
 		if (textureBuffer) {
 			stbi_image_free(textureBuffer);
@@ -55,8 +50,16 @@ namespace Penjin {
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_glHandle);
 	}
-	void Texture::BindTexture(int width, int height, const void* pixel)
+	void Texture::Load(int width, int height, const void* pixel)
 	{
+		if (m_glHandle != 0) {
+			glDeleteTextures(1, &m_glHandle);
+			m_glHandle = 0;
+			m_width = 0;
+			m_height = 0;
+			m_filename = "none";
+		}
+
 		glGenTextures(1, &m_glHandle);
 		glBindTexture(GL_TEXTURE_2D, m_glHandle);
 
@@ -68,5 +71,8 @@ namespace Penjin {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		m_width = width;
+		m_height = height;
 	}
 }

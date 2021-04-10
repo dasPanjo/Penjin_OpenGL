@@ -1,17 +1,7 @@
 #include "Arrow.h"
-#include "ObjectLoader.h"
 #include "File.h"
 
 namespace Penjin {
-	std::string GetVertexString(Vertex vertex) {
-		char buff[300];
-		snprintf(buff, sizeof(buff), "Vertex({ %ff, %ff, %ff }, { %ff, %ff }, { %ff, %ff, %ff }, { 1.0f, 1.0f, 1.0f, 1.0f }),",
-			vertex.x, vertex.y, vertex.z,
-			vertex.u, vertex.v,
-			vertex.normX, vertex.normY, vertex.normZ);
-		std::string buffAsStdStr = buff;
-		return buffAsStdStr;
-	}
 	Arrow::Arrow() : Arrow("Arrow")
 	{
 	}
@@ -52,18 +42,9 @@ namespace Penjin {
 
 		arrowMesh->SetMesh(mesh);
 		arrowMesh->material->BaseColor = Color(1, 1, 1, 1);
-		arrowMesh->material->GetShader()->CreateShader(Shader::GetVertDefaultUnlit(), Shader::GetFragDefaultUnlit());
+		arrowMesh->material->shader = Shader::GetUnlitShader();
 		AddComponent(arrowMesh);
 
-		//Mesh* mesh = ObjectLoader::LoadObjModel("Models/ArrowLowPoly.obj");
-		//std::string expVertex = "";
-		//for (size_t i = 0; i < mesh->indices.size(); i++)
-		//{
-		//	expVertex += std::to_string(mesh->indices[i]) + ",";
-		//	if (i % 6 == 5)
-		//		expVertex += "\n";
-		//}
-		//File::Write("test.txt", expVertex);
 	}
 	void Arrow::Update()
 	{

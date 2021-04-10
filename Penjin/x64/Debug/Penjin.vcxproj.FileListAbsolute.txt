@@ -1,2 +1,0 @@
-D:\Projects\C++\OpenGL_Engine\x64\Debug\Penjin.pdb
-D:\Projects\C++\OpenGL_Engine\Penjin\x64\Debug\Penjin.pdb

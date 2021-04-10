@@ -32,6 +32,9 @@ namespace Penjin {
 
 		inline GLuint GetShaderID() { return shaderID; }
 
+		static Shader* GetUnlitShader();
+		static Shader* GetLitShader();
+
 		static std::string GetVertDefaultUnlit();
 		static std::string GetFragDefaultUnlit();
 		static std::string GetVertDefaultLit();
@@ -41,7 +44,10 @@ namespace Penjin {
 		GLuint Compile(std::string shaderSource, GLenum type);
 		std::string Parse(const char* filename);
 
-		GLuint shaderID;  
+		GLuint shaderID;
+
+		static Shader* unlitShader;
+		static Shader* litShader;
 
 		/*unordered map for uniforms. Previously called uniforms can be found in this map, which is faster than repeatidly searching large shader source code for a single uniform.*/
 		std::unordered_map<std::string, int> uniformLocationCache;

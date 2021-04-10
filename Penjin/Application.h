@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <GL/glew.h>
 #include "Camera.h"
+#include "Skybox.h"
 
 namespace Penjin
 {
@@ -24,6 +25,7 @@ namespace Penjin
 
 		/// <summary>Will be called before the first frame is drawn</summary>
 		virtual bool Startup() { return true; }
+		virtual void DrawInitFrame() {}
 		/// <summary>Will be called when the window is closed</summary>
 		virtual void Shutdown() {}
 		/// <summary>Will be called every frame</summary>
@@ -46,6 +48,8 @@ namespace Penjin
 
 		/// <summary>Returns a handle to the active Application</summary>
 		static Application* Instance;
+		
+		Skybox* skybox;
 
 	protected:
 		/// <summary>Will create a SDL window</summary>
