@@ -13,14 +13,10 @@ namespace Penjin {
 		void LoadTexture(const char* path);
 
 		Color BaseColor;
-
-		Shader* GetShader() const { return shader; }
-		Texture* GetTexture() const { return texture; }
 		
-
-	protected:
 		Shader* shader;
 		Texture* texture;
+	protected:
 	};
 }
 

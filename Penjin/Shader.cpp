@@ -3,6 +3,9 @@
 #include "Log.h"
 
 namespace Penjin {
+	Shader* Shader::unlitShader = nullptr;
+	Shader* Shader::litShader = nullptr;
+
 	Shader::Shader()
 	{
 		CreateShader(Shader::GetVertDefaultLit(), Shader::GetFragDefaultLit());
@@ -169,11 +172,32 @@ namespace Penjin {
 		glDeleteShader(frag);
 #endif
 
+
 		shaderID = program;
 		uniformLocationCache.clear();
 		return program;
 	}
 
+
+	Shader* Shader::GetUnlitShader()
+	{
+		if (unlitShader == nullptr)
+		{
+			unlitShader = new Shader();
+			unlitShader->CreateShader(GetVertDefaultUnlit(), GetFragDefaultUnlit());
+		}
+		return unlitShader;
+	}
+
+	Shader* Shader::GetLitShader()
+	{
+		if (unlitShader == nullptr)
+		{
+			unlitShader = new Shader();
+			unlitShader->CreateShader(GetVertDefaultLit(), GetFragDefaultLit());
+		}
+		return unlitShader;
+	}
 
 	std::string Shader::GetVertDefaultUnlit()
 	{
@@ -260,6 +284,7 @@ namespace Penjin {
 			"in vec4 eye;"
 			""
 			"uniform sampler2D u_texture;"
+			"uniform vec3 u_directionalLightDirection;"
 			""
 			"layout(location = 0) out vec4 f_color;"
 			""
@@ -271,16 +296,9 @@ namespace Penjin {
 			"	vec3 n = normalize(normal);"
 			"	vec3 e = normalize(vec3(eye));"
 			""
-			"	vec3 direction = vec3(0.8, 0.8, 0);"
-			""
-			"	float intensity = max(dot(n, direction), 0.0);"
-			"	if (intensity > 0.0) {"
-			"		vec3 h = normalize(direction + e);"
-			"		float intSpec = max(dot(h, n), 0.0);"
-			"		spec = vec4(0.01) * pow(intSpec, 0.01);"
-			"	}"
-			""
-			"	f_color = v_color * texColor * min(max(intensity + spec, vec4(0.1)), 0.9);"
+			"	vec3 direction = normalize(u_directionalLightDirection);"
+			"	float intensity = max(dot(n, direction)*0.8+0.2, 0.2);"
+			"	f_color = v_color * texColor * intensity;"
 			"}";
 	}
 }

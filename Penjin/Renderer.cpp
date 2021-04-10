@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include <math.h>
 #include "Log.h"
 #include "GameObject.h"
 #include <GL/glew.h>
@@ -8,6 +9,7 @@
 
 namespace Penjin {
 	std::vector<StaticMeshComponent*> Renderer::staticMeshes;
+	Camera* Renderer::activeCamera;
 
 	void Renderer::Init()
 	{
@@ -36,6 +38,19 @@ namespace Penjin {
 	}
 	void Renderer::Render()
 	{
+		Application* application = Application::Instance;
+		if (application) {			
+			Camera* camera = application->GetCamera();
+			if (camera) {
+				activeCamera = camera;
+			}
+			Skybox* skybox = application->skybox;
+			if (skybox)
+				skybox->Draw();
+		}
+
+		if(activeCamera)
+			activeCamera->CalculateViewMatrix();
 		for (size_t i = 0; i < staticMeshes.size(); i++)
 		{
 			if (staticMeshes[i])
@@ -57,14 +72,14 @@ namespace Penjin {
 
 		glm::mat4 modelMatrix = glm::mat4(1);
 
-		std::vector<Transform *> transformChain;
+		std::vector<Transform*> transformChain;
 		Transform* nextTransform = &meshFilter->gameObject->transform;
 		while (nextTransform != nullptr) {
 			transformChain.push_back(nextTransform);
 			nextTransform = nextTransform->parent;
 		}
 
-		for (int i = transformChain.size()-1; i >= 0; i--)
+		for (int i = transformChain.size() - 1; i >= 0; i--)
 		{
 			Vector3 position = transformChain[i]->position;
 			Vector3 rotation = transformChain[i]->rotation;
@@ -80,31 +95,30 @@ namespace Penjin {
 
 		}
 
-		Shader* shader = meshFilter->material->GetShader();
+		Shader* shader = meshFilter->material->shader;
 		shader->Bind();
-		shader->SetUniform1i("u_texture", 0);		
+		shader->SetUniform1i("u_texture", 0);
 
 		Color color = meshFilter->material->BaseColor;
 		glm::vec4 baseColor(color.r, color.g, color.b, color.a);
 		shader->SetUniform4f("u_baseColor", baseColor);
 
-		
+
 		shader->SetUniformMat4f("u_modelMatrix", modelMatrix);
+
 		glm::mat3 normalMatrix(glm::transpose(glm::inverse(modelMatrix)));
 		shader->SetUniformMat3f("u_normalMatrix", normalMatrix);
 
-		Application* application = Application::Instance;
-		if (application)
+		shader->SetUniform3f("u_directionalLightDirection", glm::vec3(1.2f, 2.1f, 0.8f));
+
+		if(activeCamera)
 		{
-			Camera* camera = application->GetCamera();
-			if (camera) {
-				//Log::Message("Rendering " + gameObject->name + " Indices: " + std::to_string(meshFilter->mesh->indices.size()));
-				shader->SetUniformMat4f("u_viewMatrix", camera->GetViewMatrix());
-				shader->SetUniformMat4f("u_projectionMatrix", camera->GetProjectionMatrix());
-			}
-			else {
-				Log::Error("No active camera!");
-			}
+			shader->SetUniformMat4f("u_viewMatrix", activeCamera->GetViewMatrix());
+			shader->SetUniformMat4f("u_projectionMatrix", activeCamera->GetProjectionMatrix());
+		}
+		else 
+		{
+			Log::Error("No active camera!");
 		}
 
 		glDisable(GL_CULL_FACE);

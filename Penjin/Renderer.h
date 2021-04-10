@@ -2,6 +2,7 @@
 #include <vector>
 #include "StaticMeshComponent.h"
 #include "Shader.h"
+#include "Camera.h"
 
 namespace Penjin {
 	class Renderer
@@ -15,8 +16,8 @@ namespace Penjin {
 
 	private:
 		static std::vector<StaticMeshComponent*> staticMeshes;
-
 		static void RenderStaticMesh(StaticMeshComponent* meshFilter);
+		static Camera* activeCamera;
 	};
 }
 

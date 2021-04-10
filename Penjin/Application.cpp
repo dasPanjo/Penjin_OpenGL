@@ -34,9 +34,15 @@ namespace Penjin
 
 	void Application::Run(const char* title, int width, int height, bool fullscreen)
 	{
-		if (CreateWindow(title, width, height, fullscreen) && Startup())
+		if (CreateWindow(title, width, height, fullscreen))
 		{
+			DrawInitFrame();
 			Renderer::Init();
+			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			Renderer::Render();
+			SDL_GL_SwapWindow(window);
+			Startup();
 
 			float frameTimer = 0;
 
@@ -57,12 +63,12 @@ namespace Penjin
 						Input::OnKeyUp(event.key.keysym.sym);
 						break;
 					case SDL_MOUSEMOTION:
-						int x = event.motion.xrel;
-						int y = event.motion.yrel;
-						Input::mouseSpeed.x = x;
-						Input::mouseSpeed.y = y;
-						Input::mousePos.x += x;
-						Input::mousePos.y += y;
+						int x, y;
+						SDL_GetMouseState(&x, &y);
+						Input::mouseSpeed.x = (float)event.motion.xrel;
+						Input::mouseSpeed.y = (float)event.motion.yrel;
+						Input::mousePos.x += (float)x;
+						Input::mousePos.y += (float)y;
 					}
 				}
 				if (m_gameOver) break;
@@ -108,7 +114,7 @@ namespace Penjin
 		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetSwapInterval(1);
+		//SDL_GL_SetSwapInterval(1);
 
 #ifdef _DEBUG
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);

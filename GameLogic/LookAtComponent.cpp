@@ -4,6 +4,9 @@
 void LookAtComponent::Update()
 {
 	switch (direction) {
+	case Direction::Position:
+		gameObject->transform.LookAt(position);
+		break;
 	case Direction::ForwardVector:
 		gameObject->transform.position = this->lookAt->position + this->lookAt->GetForwardVector() * 0.02f;
 		gameObject->transform.LookAt(this->lookAt->position + this->lookAt->GetForwardVector());

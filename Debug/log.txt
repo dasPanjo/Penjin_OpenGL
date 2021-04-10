@@ -1,0 +1,23 @@
+[10.04.2021 - 02:34:07]	[Info] OpenGL vesion: 4.6.0 NVIDIA 451.67
+[10.04.2021 - 02:34:07]	[Error] Texture 'Images/Daylight Box UV.png' not found!
+[10.04.2021 - 02:34:07]	[Info] Starting...
+[10.04.2021 - 02:34:07]	[Error] Unable to find asset 'Models/Arrow'
+[10.04.2021 - 02:34:07]	[Error] Unable to find asset 'Models/Plate'
+[10.04.2021 - 02:34:07]	[Error] Texture 'Images/WhitePixel.png' not found!
+[10.04.2021 - 02:34:07]	[Error] Unable to find asset 'Models/Cube'
+[10.04.2021 - 02:34:07]	[Info] LoadedModels/Cube
+[10.04.2021 - 02:34:07]	[Error] none: VAO not initialized. Mesh is nullptr!
+[10.04.2021 - 02:34:07]	[Error] Texture 'Images/WhitePixel.png' not found!
+[10.04.2021 - 02:34:07]	[Error] none: VAO not initialized. Mesh is nullptr!
+[10.04.2021 - 02:34:07]	[Error] Texture 'Images/WhitePixel.png' not found!
+[10.04.2021 - 02:34:07]	[Error] none: VAO not initialized. Mesh is nullptr!
+[10.04.2021 - 02:34:07]	[Error] Texture 'Images/WhitePixel.png' not found!
+[10.04.2021 - 02:34:07]	[Error] Unable to find asset 'Models/Monkey'
+[10.04.2021 - 02:34:07]	[Error] Unable to find asset 'Models/WeirdCube'
+[10.04.2021 - 02:34:07]	[Info] LoadedModels/Monkey
+[10.04.2021 - 02:34:07]	[Info] LoadedModels/WeirdCube
+[10.04.2021 - 02:34:07]	[Error] Models/Cube: VAO not initialized. Mesh is nullptr!
+[10.04.2021 - 02:34:07]	[Error] Shader error: Uniform 'u_normalMatrix' doesnt exist.
+[10.04.2021 - 02:34:07]	[Error] Shader error: Uniform 'u_directionalLightDirection' doesnt exist.
+[10.04.2021 - 02:34:07]	[Error] Models/Monkey: VAO not initialized. Mesh is nullptr!
+[10.04.2021 - 02:34:12]	[Info] Shutting down...

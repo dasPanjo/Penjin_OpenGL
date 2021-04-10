@@ -7,13 +7,15 @@ class Application3D
 	: public Penjin::Application
 {
 public:
+	
 	static void Start() { DeleteInstance(); Instance = new Application3D(); Instance->Run("Game Logic", 1280, 720, false); }
 	static void DeleteInstance() { if (Instance) { delete Instance; } }
 
-	virtual bool Startup();
-	virtual void Shutdown();
-	virtual void Update();
-	virtual void Draw();
+	virtual bool Startup() override;
+	virtual void DrawInitFrame() override;
+	virtual void Shutdown() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 
 private:
@@ -29,6 +31,6 @@ private:
 	Penjin::Arrow* arrowZ = nullptr;
 
 	Penjin::GameObject* weirdCube = nullptr;
-	Penjin::GameObject* weirdCubeTop = nullptr;
+	Penjin::GameObject* monkey = nullptr;
 };
 

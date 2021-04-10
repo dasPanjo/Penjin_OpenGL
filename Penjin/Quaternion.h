@@ -14,8 +14,7 @@ namespace Penjin {
 
 		Vector3 GetEuler();
 
-		static Quaternion Euler(float x, float y, float z);
-
+		static Quaternion Euler(float x, float y, float z);		
 	};
 }
 
