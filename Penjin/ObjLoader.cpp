@@ -77,7 +77,7 @@ namespace Penjin {
 	{
 		strlist info = Split(line, ' ');
 		if (info.size() >= 3) {
-			uvs->push_back(Vector3(std::stof(info[1]), std::stof(info[2])));
+			uvs->push_back(Vector2(std::stof(info[1]), std::stof(info[2])));
 		}
 	}
 	void ObjLoader::ProcessVertexNormalLine(std::string line, std::vector<Vector3>* normals)

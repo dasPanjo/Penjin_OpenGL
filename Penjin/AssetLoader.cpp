@@ -58,6 +58,7 @@ namespace Penjin
 		Mesh* mesh = ObjLoader::Load(filename);
 		if (mesh != nullptr)
 		{
+			mesh->SetName(filename);
 			size_t dotPosition = filename.find_last_of(".");
 			std::string fileNoExt = filename.substr(0, dotPosition);
 			mesh->Export(fileNoExt + ".pAsset");
@@ -106,6 +107,7 @@ namespace Penjin
 			indices.push_back(index);
 		}
 		Mesh* mesh = new Mesh();
+		mesh->SetName(filename);
 		mesh->vertices = vertices;
 		mesh->indices = indices;
 		return mesh;

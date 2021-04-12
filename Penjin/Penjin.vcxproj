@@ -22,8 +22,10 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DynamicWorld.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -34,6 +36,7 @@
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RigidbodyComponent.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="StaticMeshComponent.cpp" />
@@ -48,8 +51,10 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DynamicWorld.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Input.h" />
@@ -61,6 +66,7 @@
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RigidbodyComponent.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="StaticMeshComponent.h" />
@@ -127,26 +133,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\SDL2-2.0.14\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\SDL2-2.0.14\lib\x86;D:\Projects\C++\OpenGL_Engine\Dependencies\BulletPhysics\libs;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Projectname)_Export\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)$(Projectname)_Export\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;$(SolutionDir)Dependencies\BulletPhysics\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\SDL2-2.0.14\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;D:\Projects\C++\OpenGL_Engine\Dependencies\BulletPhysics\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\SDL2-2.0.14\lib\x86;D:\Projects\C++\OpenGL_Engine\Dependencies\BulletPhysics\libs;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Projectname)_Export\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;D:\Projects\C++\OpenGL_Engine\Dependencies\BulletPhysics\includes;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\SDL2-2.0.14\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Projectname)_Export\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\SDL2-2.0.14\include;D:\Projects\C++\OpenGL_Engine\Dependencies\BulletPhysics\includes;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\SDL2-2.0.14\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Projectname)_Export\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -170,8 +176,11 @@
       </Outputs>
     </CustomBuildStep>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

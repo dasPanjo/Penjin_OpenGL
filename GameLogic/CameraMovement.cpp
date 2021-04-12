@@ -25,9 +25,9 @@ void CameraMovement::Update()
 	}
 
 	gameObject->transform.Rotate(Penjin::Vector3(Penjin::Input::mouseSpeed.y, Penjin::Input::mouseSpeed.x, 0));
-	if (gameObject->transform.rotation.x < -90)
-		gameObject->transform.rotation.x = -90;
-	if (gameObject->transform.rotation.x > 90)
-		gameObject->transform.rotation.x = 90;
+	//if (gameObject->transform.rotation.x < -90)
+	//	gameObject->transform.rotation.x = -90;
+	//if (gameObject->transform.rotation.x > 90)
+	//	gameObject->transform.rotation.x = 90;
 
 }

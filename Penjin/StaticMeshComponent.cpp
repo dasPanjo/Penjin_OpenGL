@@ -23,12 +23,13 @@ namespace Penjin
 	{
 		Renderer::Bind(this);
 	}
-	void StaticMeshComponent::BindVao()
+	bool StaticMeshComponent::BindVao()
 	{
 		if(drawWireframe)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		if (!IsInit()) return;
+		if (!IsInit()) return false;
 		glBindVertexArray(vao);
+		return true;
 	}
 	void StaticMeshComponent::UnbindVao()
 	{
@@ -79,6 +80,7 @@ namespace Penjin
 			vao = 0;
 			return;
 		}
+		Log::Message("Init vao " + mesh->GetName());
 		if (mesh->vertices.size() == 0 || mesh->indices.size() == 0) {
 			Log::Error(loadedFile + ": VAO not initialized. vert_size(" +std::to_string(mesh->indices.size()) + ") indices_size("+ std::to_string(mesh->indices.size()) +")");
 			vao = 0;
@@ -123,5 +125,8 @@ namespace Penjin
 		//color
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 4, GL_FLOAT, false, sizeof(Vertex), (GLvoid*)offsetof(struct Vertex, r));
+
+		glBindVertexArray(0);
+
 	}
 }

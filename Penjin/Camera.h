@@ -18,10 +18,10 @@ namespace Penjin {
 			/// <param name="fov">float: Field of view</param>
 			Camera(Vector3 position, float fov);
 
-			/// <summary>Field of view</summary>
-			float FOV;
+			float GetFov() const { return fov; }
+			void SetFov(float fov) { this->fov = fov; }
 
-
+			void CalculateProjectionMatrix();
 			void CalculateViewMatrix(bool translation = true);
 
 			/// <summary>Returns the view matrix</summary>
@@ -34,9 +34,7 @@ namespace Penjin {
 		glm::mat4 projectionMatrix;
 		glm::mat4 viewMatrix;
 
-		/// <summary>The current aspectRatio</summary>
-		float aspectRatio;
-
+		float fov;
 	};
 }
 

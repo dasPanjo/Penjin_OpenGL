@@ -1,2 +1,7 @@
-﻿  Penjin_Vector3Test.cpp
-  Penjin_UnitTest.vcxproj -> D:\Projects\C++\OpenGL_Engine\Debug\Penjin_UnitTest.dll
+﻿  pch.cpp
+  Penjin_QuaternionTest.cpp
+  Penjin_Vector2Test.cpp
+  Penjin_Vector4Test.cpp
+  Penjin_Vector3Test.cpp
+  Generating Code...
+D:\Projects\C++\OpenGL_Engine\Penjin_UnitTest\Penjin_Vector3Test.cpp : fatal error C1090: PDB API call failed, error code '3': D:\Projects\C++\OpenGL_Engine\Penjin_UnitTest\Debug\vc142.pdb

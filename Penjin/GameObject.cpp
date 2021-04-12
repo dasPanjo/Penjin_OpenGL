@@ -42,7 +42,7 @@ void Penjin::GameObject::AddComponent(Component* component)
 	}
 	//Log::Message("Added " + name);
 	components.push_back(component);
-	component->gameObject = this;
+	component->SetGameObject(this);
 	component->Start();
 }
 

@@ -38,13 +38,13 @@ namespace Penjin {
 	}
 	void Renderer::Render()
 	{
-		Application* application = Application::Instance;
+		Application* application = Application::GetInstance();
 		if (application) {			
 			Camera* camera = application->GetCamera();
 			if (camera) {
 				activeCamera = camera;
 			}
-			Skybox* skybox = application->skybox;
+			Skybox* skybox = application->GetSkybox();
 			if (skybox)
 				skybox->Draw();
 		}
@@ -59,7 +59,7 @@ namespace Penjin {
 	}
 	void Renderer::RenderStaticMesh(StaticMeshComponent* meshFilter)
 	{
-		GameObject* gameObject = meshFilter->gameObject;
+		GameObject* gameObject = meshFilter->GetGameObject();
 		if (!gameObject) {
 			Log::Error("Renderer: no gameObject for staticMeshComponent");
 			return;
@@ -73,7 +73,7 @@ namespace Penjin {
 		glm::mat4 modelMatrix = glm::mat4(1);
 
 		std::vector<Transform*> transformChain;
-		Transform* nextTransform = &meshFilter->gameObject->transform;
+		Transform* nextTransform = &gameObject->transform;
 		while (nextTransform != nullptr) {
 			transformChain.push_back(nextTransform);
 			nextTransform = nextTransform->parent;

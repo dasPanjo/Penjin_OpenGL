@@ -4,6 +4,9 @@
 
 namespace Penjin {
 	Skybox::Skybox()
+		:vao(0),
+		ibo(0),
+		vbo(0)
 	{
 		CreateMesh();
 		texture = new Texture();
@@ -105,7 +108,7 @@ namespace Penjin {
 
 	void Skybox::Draw()
 	{
-		if (vao == 0) {
+		if (vao <= 0) {
 			Log::Error("Skybox: vao not initialized!");
 			return;
 		}
@@ -114,7 +117,7 @@ namespace Penjin {
 
 		glBindVertexArray(vao);
 
-		Application* application = Application::Instance;
+		Application* application = Application::GetInstance();
 		if (application)
 		{
 			Camera* camera = application->GetCamera();
