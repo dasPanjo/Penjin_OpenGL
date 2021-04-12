@@ -12,17 +12,20 @@ namespace Penjin {
 	{
 	}
 	Camera::Camera(Vector3 position, float fov)
-		: FOV(fov)
+		: fov(fov)
 	{
-		SDL_Window* window = Application::Instance->GetWindow();
-		int width;
-		int height;
-		SDL_GetWindowSize(window, &width, &height);
-		aspectRatio = (float)width / (float)height;
-
 		transform.position = position;
 		name = "Camera";
 
+		CalculateProjectionMatrix();
+	}
+	void Camera::CalculateProjectionMatrix()
+	{
+		SDL_Window* window = Application::GetInstance()->GetWindow();
+		int width;
+		int height;
+		SDL_GetWindowSize(window, &width, &height);
+		float aspectRatio = (float)width / (float)height;
 		projectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 5000.0f);
 	}
 	void Camera::CalculateViewMatrix(bool translation)

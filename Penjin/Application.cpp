@@ -24,7 +24,9 @@ namespace Penjin
 		: m_gameOver(false),
 		glContext(nullptr),
 		window(nullptr),
-		camera(nullptr)
+		camera(nullptr),
+		skybox(nullptr),
+		dynamicWorld(nullptr)
 	{
 	}
 
@@ -34,18 +36,13 @@ namespace Penjin
 
 	void Application::Run(const char* title, int width, int height, bool fullscreen)
 	{
-		if (CreateWindow(title, width, height, fullscreen))
+		if (CreateWindow(title, width, height, fullscreen) && Awake())
 		{
-			DrawInitFrame();
 			Renderer::Init();
-			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-			Renderer::Render();
-			SDL_GL_SwapWindow(window);
+
+
 			Startup();
-
 			float frameTimer = 0;
-
 			while (!m_gameOver) {
 				Input::mouseSpeed.x = 0;
 				Input::mouseSpeed.y = 0;
@@ -69,6 +66,13 @@ namespace Penjin
 						Input::mouseSpeed.y = (float)event.motion.yrel;
 						Input::mousePos.x += (float)x;
 						Input::mousePos.y += (float)y;
+					case SDL_WINDOWEVENT:
+						if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+							Camera* camera = this->GetCamera();
+							if (camera != nullptr) {
+								camera->CalculateProjectionMatrix();
+							}
+						}
 					}
 				}
 				if (m_gameOver) break;
@@ -95,6 +99,8 @@ namespace Penjin
 
 	void Application::Update()
 	{
+		camera->Update();
+		dynamicWorld->Update();
 	}
 
 	void Application::Draw()
@@ -102,10 +108,16 @@ namespace Penjin
 		Renderer::Render();
 	}
 
+	void Application::SetCamera(Camera* camera)
+	{
+		if (this->camera != nullptr)
+			delete this->camera;
+		this->camera = camera;
+	}
+
 
 	bool Application::CreateWindow(const char* title, int width, int height, bool fullscreen)
 	{
-
 		SDL_Init(SDL_INIT_EVERYTHING);
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);

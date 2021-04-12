@@ -1,4 +1,10 @@
-﻿  Main.cpp
+﻿  Application3D.cpp
+D:\Projects\C++\OpenGL_Engine\GameLogic\Application3D.cpp(7,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+D:\Projects\C++\OpenGL_Engine\GameLogic\Application3D.cpp(60,108): warning C4316: 'Penjin::CollisionComponent': object allocated on the heap may not be aligned 16
+D:\Projects\C++\OpenGL_Engine\GameLogic\Application3D.cpp(73,104): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Projects\C++\OpenGL_Engine\GameLogic\Application3D.cpp(73,109): warning C4316: 'Penjin::CollisionComponent': object allocated on the heap may not be aligned 16
+  RotationComponent.cpp
+  Generating Code...
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
 Penjin.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Penjin.lib(glew.obj)' or at 'D:\Projects\C++\OpenGL_Engine\Debug\vc120.pdb'; linking object as if no debug info
   GameLogic.vcxproj -> D:\Projects\C++\OpenGL_Engine\Debug\GameLogic.exe

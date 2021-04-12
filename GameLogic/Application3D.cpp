@@ -4,7 +4,7 @@
 #include <Times.h>
 #include <Log.h>
 #include <StaticMeshComponent.h>
-#include <Color.h>
+#include <Color.h>d
 #include <AssetLoader.h>
 #include "RotationComponent.h"
 #include "RotateAroundPointComponent.h"
@@ -13,163 +13,98 @@
 #include <Skybox.h>
 #include <Renderer.h>
 #include <chrono>
+#include <CollisionComponent.h>
 
-
-bool Application3D::Startup()
+Application3D::~Application3D()
 {
-	if (!Application::Startup()) return false;
+	Application::~Application();
 
-	Penjin::Log::Message("Starting...");
-
-	CameraMovement* cameraMovement = new CameraMovement();
-	cameraMovement->speed = 20;
-	camera->AddComponent(cameraMovement);
-
-	LookAtComponent* lookAt = new LookAtComponent();
-	lookAt->direction = LookAtComponent::Direction::Position;
-	lookAt->position = Penjin::Vector3(0, 0, 0);
-	//camera->AddComponent(lookAt);
-
-	Penjin::Mesh* meshArrow = Penjin::AssetLoader::LoadModel("Models/Arrow");
-	Penjin::Mesh* meshPlate = Penjin::AssetLoader::LoadModel("Models/Plate");
-
-	//Arrow
-	arrow = new Penjin::GameObject("Arrow");
-	arrow->transform.position = Penjin::Vector3(0, 2.5f, 0);
-	arrow->transform.rotation = Penjin::Vector3(90, 90, 90);
-	arrow->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
-
-	Penjin::StaticMeshComponent* arrow_staticMeshComponent = new Penjin::StaticMeshComponent();
-	arrow_staticMeshComponent->LoadMeshAsync("Models/Cube");
-	arrow_staticMeshComponent->material->LoadTexture("Images/WhitePixel.png");
-	arrow_staticMeshComponent->material->shader = Penjin::Shader::GetUnlitShader();
-	arrow_staticMeshComponent->drawWireframe = false;
-	arrow_staticMeshComponent->material->BaseColor = Penjin::Color(1, 1, 1);
-	arrow->AddComponent(arrow_staticMeshComponent);
-
-	RotationComponent* cube_rotationComponent = new RotationComponent();
-	arrow->AddComponent(cube_rotationComponent);
-
-	//CubeX
-	cubeX = new Penjin::GameObject("CubeX"); 
-	cubeX->transform.position = Penjin::Vector3(0, 0, 0);
-	cubeX->transform.rotation = Penjin::Vector3(0, 90, 0);
-	cubeX->transform.parent = &arrow->transform;
-
-	Penjin::StaticMeshComponent* cube_x_staticMeshComponent = new Penjin::StaticMeshComponent();
-	cube_x_staticMeshComponent->SetMesh(meshPlate);
-	cube_x_staticMeshComponent->material->LoadTexture("Images/WhitePixel.png");
-	cube_x_staticMeshComponent->material->shader = Penjin::Shader::GetUnlitShader();
-	cube_x_staticMeshComponent->drawWireframe = false;
-	cube_x_staticMeshComponent->material->BaseColor = Penjin::Color(1, 0, 0);
-	cubeX->AddComponent(cube_x_staticMeshComponent);
-
-	//CubeY
-	cubeY = new Penjin::GameObject("CubeY");
-	cubeY->transform.position = Penjin::Vector3(0, 0, 0);
-	cubeY->transform.rotation = Penjin::Vector3(-90, 0, 0);
-	cubeY->transform.parent = &arrow->transform;
-
-	Penjin::StaticMeshComponent* cube_y_staticMeshComponent = new Penjin::StaticMeshComponent();
-	cube_y_staticMeshComponent->SetMesh(meshPlate);
-	cube_y_staticMeshComponent->material->LoadTexture("Images/WhitePixel.png");
-	cube_y_staticMeshComponent->material->shader = Penjin::Shader::GetUnlitShader();
-	cube_y_staticMeshComponent->drawWireframe = false;
-	cube_y_staticMeshComponent->material->BaseColor = Penjin::Color(0, 1, 0);
-	cubeY->AddComponent(cube_y_staticMeshComponent);
-
-	//CubeZ
-	cubeZ = new Penjin::GameObject("CubeZ");
-	cubeZ->transform.position = Penjin::Vector3(0, 0, 0);
-	cubeZ->transform.rotation = Penjin::Vector3(0, 0, -90);
-	cubeZ->transform.parent = &arrow->transform;
-
-	Penjin::StaticMeshComponent* cube_z_staticMeshComponent = new Penjin::StaticMeshComponent();
-	cube_z_staticMeshComponent->SetMesh(meshPlate);
-	cube_z_staticMeshComponent->material->LoadTexture("Images/WhitePixel.png");
-	cube_z_staticMeshComponent->material->shader = Penjin::Shader::GetUnlitShader();
-	cube_z_staticMeshComponent->drawWireframe = false;
-	cube_z_staticMeshComponent->material->BaseColor = Penjin::Color(0, 0, 1);
-	cubeZ->AddComponent(cube_z_staticMeshComponent);
-
-
-	//ArrowX
-
-	arrowX = new Penjin::Arrow("ArrowX");
-	arrowX->transform.position = Penjin::Vector3(0.2f, 0, 0);
-	arrowX->transform.rotation = Penjin::Vector3(0, 0, -90);	
-	arrowX->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
-
-	arrowX->color = Penjin::Color(1.0f, 0.0f, 0.0f);
-
-	LookAtComponent* arrow_x_lookAtComponent = new LookAtComponent();
-	arrow_x_lookAtComponent->lookAt = &arrow->transform;
-	arrow_x_lookAtComponent->direction = LookAtComponent::Direction::RightVector;
-	arrowX->AddComponent(arrow_x_lookAtComponent);
-
-	//ArrowY
-	arrowY = new Penjin::Arrow("ArrowY");
-	arrowY->transform.position = Penjin::Vector3(0, 0.2f, 0);
-	arrowY->transform.rotation = Penjin::Vector3(0, 0, 0);
-	arrowY->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
-	arrowY->color = Penjin::Color(0.0f, 1.0f, 0.0f);
-
-	LookAtComponent* arrow_y_lookAtComponent = new LookAtComponent();
-	arrow_y_lookAtComponent->lookAt = &arrow->transform;
-	arrow_y_lookAtComponent->direction = LookAtComponent::Direction::UpVector;
-	arrowY->AddComponent(arrow_y_lookAtComponent);
-
-
-	//ArrowZ
-	arrowZ = new Penjin::Arrow("ArrowZ");
-	arrowZ->transform.position = Penjin::Vector3(0, 0, 0.2f);
-	arrowZ->transform.rotation = Penjin::Vector3(90, 0, 0);
-	arrowZ->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
-	arrowZ->color = Penjin::Color(0.0f, 0.0f, 1.0f);
-
-	LookAtComponent* arrow_z_lookAtComponent = new LookAtComponent();
-	arrow_z_lookAtComponent->lookAt = &arrow->transform;
-	arrow_z_lookAtComponent->direction = LookAtComponent::Direction::ForwardVector;
-	arrowZ->AddComponent(arrow_z_lookAtComponent);
-	
-
-	weirdCube = new Penjin::GameObject("TestObject");
-	weirdCube->transform.position = Penjin::Vector3(0, 1, 0);
-	//weirdCube->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
-
-	//Cube
-	Penjin::StaticMeshComponent* weirdCube_staticMeshComponent = new Penjin::StaticMeshComponent();
-	weirdCube_staticMeshComponent->LoadMeshAsync("Models/WeirdCube");
-	//weirdCube_staticMeshComponent->material->BaseColor = Penjin::Color(0.7f, 0.7f, 0.7f, 1.0f);
-	weirdCube_staticMeshComponent->drawWireframe = false;
-	weirdCube->AddComponent(weirdCube_staticMeshComponent);
-
-	monkey = new Penjin::GameObject("Monkey");
-	monkey->transform.position = Penjin::Vector3(0.0f, 0.0f, 0.0f);
-	monkey->transform.rotation = Penjin::Vector3(0.0f, 0.0f, 0.0f);
-
-	//Cube
-	Penjin::StaticMeshComponent* monkey_staticMeshComponent = new Penjin::StaticMeshComponent();
-
-	auto start = std::chrono::high_resolution_clock::now();
-	monkey_staticMeshComponent->LoadMesh("Models/CityBlock");
-	auto finish = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> elapsed = finish - start;
-	Penjin::Log::Message("Loaded in " + std::to_string(elapsed.count()) + " seconds!");
-	monkey_staticMeshComponent->material->BaseColor = Penjin::Color(0.7f, 0.7f, 0.7f, 1.0f);
-	monkey_staticMeshComponent->drawWireframe = false;
-	monkey->AddComponent(monkey_staticMeshComponent);
-		
-	return true;
 }
 
-void Application3D::DrawInitFrame()
+bool Application3D::Awake()
 {
-	camera = new Penjin::Camera(Penjin::Vector3(0, 1, -3), 60);
+	if (!Application::Awake()) return false;
+	return true;
+}
+void Application3D::Startup()
+{
+	Penjin::Log::Message("Starting...");
+	
+	//Penjin::Mesh* mesh = Penjin::AssetLoader::LoadModel("Models/GTA");
+
+	if (camera == nullptr) camera = new Penjin::Camera();
+	camera->transform.position = Penjin::Vector3(0, 1, -10);
 	camera->transform.rotation = Penjin::Vector3(0, 0, 0);
 
-	skybox = new Penjin::Skybox();
+	if (skybox == nullptr) skybox = new Penjin::Skybox();
 	skybox->LoadTexture("Images/Daylight Box UV.png");
+
+	if (dynamicWorld == nullptr) dynamicWorld = new Penjin::DynamicWorld();
+
+
+	CameraMovement* cameraMovement = new CameraMovement();
+	cameraMovement->speed = 10;
+	camera->AddComponent(cameraMovement);
+
+	RotateAroundPointComponent* cameraRotation = new RotateAroundPointComponent(Penjin::Vector3(0, 2, 0), 15, 40);
+	//camera->AddComponent(cameraRotation);
+
+	cube1 = new Penjin::GameObject("Cube1");
+	//cube1->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
+
+	Penjin::StaticMeshComponent* cube1_staticMesh = new Penjin::StaticMeshComponent();
+	cube1_staticMesh->LoadMesh("Models/Cube");
+	cube1->AddComponent(cube1_staticMesh);
+	cube1_staticMesh->material->BaseColor = Penjin::Color(0, 0, 1, 1);
+
+	Penjin::CollisionComponent* cube1_collision = new Penjin::CollisionComponent(Penjin::Vector3(0, 10, 0), 1);
+	cube1->AddComponent(cube1_collision);
+
+
+
+
+
+	cube2 = new Penjin::GameObject("Cube2");
+	//cube2->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
+	Penjin::StaticMeshComponent* cube2_staticMesh = new Penjin::StaticMeshComponent();
+	cube2_staticMesh->LoadMesh("Models/Cube");
+	cube2->AddComponent(cube2_staticMesh);
+
+	Penjin::CollisionComponent* cube2_collision = new Penjin::CollisionComponent(Penjin::Vector3(1.1, 0, 1), 0);
+	cube2->AddComponent(cube2_collision);
+
+
+	//cube3 = new Penjin::GameObject("Cube3");
+	////cube2->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
+	//Penjin::StaticMeshComponent* cube3_staticMesh = new Penjin::StaticMeshComponent();
+	//cube3_staticMesh->LoadMesh("Models/Cube");
+	//cube3->AddComponent(cube3_staticMesh);
+
+	//Penjin::CollisionComponent* cube3_collision = new Penjin::CollisionComponent(Penjin::Vector3(-1.2, 2.2, -1), 0);
+	//cube3->AddComponent(cube3_collision);
+
+
+
+	//cube4 = new Penjin::GameObject("Cube4");
+	////cube1->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
+
+	//Penjin::StaticMeshComponent* cube4_staticMesh = new Penjin::StaticMeshComponent();
+	//cube4_staticMesh->LoadMesh("Models/Cube");
+	//cube4_staticMesh->material->BaseColor = Penjin::Color(0, 1, 0, 1);
+	//cube4->AddComponent(cube4_staticMesh);
+
+	//Penjin::CollisionComponent* cube4_collision = new Penjin::CollisionComponent(Penjin::Vector3(0, 50, 0), 1);
+	//cube4->AddComponent(cube4_collision);
+
+	//cube5 = new Penjin::GameObject("Cube5");
+	////cube1->transform.scale = Penjin::Vector3(0.5f, 0.5f, 0.5f);
+
+	//Penjin::StaticMeshComponent* cube5_staticMesh = new Penjin::StaticMeshComponent();
+	//cube5_staticMesh->LoadMesh("Models/Cube");
+	//cube5_staticMesh->material->BaseColor = Penjin::Color(1, 0, 0, 1);
+	//cube5->AddComponent(cube5_staticMesh);
+	//Penjin::CollisionComponent* cube5_collision = new Penjin::CollisionComponent(Penjin::Vector3(0.5f, 60, 0), 4);
+	//cube5->AddComponent(cube5_collision);
 }
 
 void Application3D::Shutdown()
@@ -181,21 +116,14 @@ void Application3D::Shutdown()
 void Application3D::Update()
 {
 	Application::Update();
-	SDL_SetWindowTitle(GetWindow(), ("FPS " + std::to_string(Penjin::Time::GetFps()) + " ( " + std::to_string(Penjin::Time::GetDeltaTime()) + "ms )").c_str());
+	//SDL_SetWindowTitle(GetWindow(), ("FPS " + std::to_string(Penjin::Time::GetFps()) + " ( " + std::to_string(Penjin::Time::GetDeltaTime()) + "ms )").c_str());
 
-	
-	camera->Update();
-	weirdCube->Update();
-	monkey->Update();
-	
-	arrow->Update();
-	cubeX->Update();
-	cubeY->Update();
-	cubeZ->Update();
-	arrowX->Update();
-	arrowY->Update();
-	arrowZ->Update();
-	
+	cube1->Update();
+	cube2->Update();
+	//cube3->Update();
+	//cube4->Update();
+	//cube5->Update();
+
 }
 
 void Application3D::Draw()

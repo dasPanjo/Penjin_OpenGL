@@ -13,7 +13,7 @@ namespace Penjin {
 	public:
 		StaticMeshComponent();
 		virtual void Start() override;
-		void BindVao();
+		bool BindVao();
 		void UnbindVao();
 		void SetMesh(Mesh* mesh); 
 		void LoadMesh(const char* filename);

@@ -6,4 +6,8 @@ namespace Penjin
 		:gameObject(nullptr)
 	{
 	}
+	void Component::SetGameObject(GameObject* gameObject)
+	{
+		this->gameObject = gameObject;
+	}
 }

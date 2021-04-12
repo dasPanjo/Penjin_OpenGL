@@ -8,29 +8,26 @@ class Application3D
 {
 public:
 	
+	virtual ~Application3D() override;
+
 	static void Start() { DeleteInstance(); Instance = new Application3D(); Instance->Run("Game Logic", 1280, 720, false); }
 	static void DeleteInstance() { if (Instance) { delete Instance; } }
 
-	virtual bool Startup() override;
-	virtual void DrawInitFrame() override;
+	virtual bool Awake() override;
+	virtual void Startup() override;
 	virtual void Shutdown() override;
 	virtual void Update() override;
 	virtual void Draw() override;
 
+protected:
+	Penjin::GameObject* cube1;
+	Penjin::GameObject* cube2;
+	Penjin::GameObject* cube3;
+	Penjin::GameObject* cube4;
+	Penjin::GameObject* cube5;
+	Penjin::GameObject* cube6;
+	Penjin::GameObject* cube7;
 
-private:
 
-	Penjin::GameObject* arrow = nullptr;
-
-	Penjin::GameObject* cubeX = nullptr;
-	Penjin::GameObject* cubeY = nullptr;
-	Penjin::GameObject* cubeZ = nullptr;
-
-	Penjin::Arrow* arrowX = nullptr;
-	Penjin::Arrow* arrowY = nullptr;
-	Penjin::Arrow* arrowZ = nullptr;
-
-	Penjin::GameObject* weirdCube = nullptr;
-	Penjin::GameObject* monkey = nullptr;
 };
 
